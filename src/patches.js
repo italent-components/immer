@@ -100,7 +100,7 @@ function generateObjectPatches(
         )
     })
 }
-
+// 应用补丁
 export function applyPatches(draft, patches) {
     for (let i = 0; i < patches.length; i++) {
         const patch = patches[i]
