@@ -1,7 +1,9 @@
+// each 处理对象和数组
 import {each} from "./common"
 
+// 生成补丁
 export function generatePatches(
-    state,
+    state,              
     basepath,
     patches,
     inversePatches,
@@ -29,6 +31,7 @@ export function generatePatches(
             )
 }
 
+// 生成数组补丁
 export function generateArrayPatches(
     state,
     basepath,
@@ -70,6 +73,7 @@ export function generateArrayPatches(
     }
 }
 
+// 生成对象补丁
 function generateObjectPatches(
     state,
     basepath,
