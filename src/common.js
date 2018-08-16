@@ -73,9 +73,12 @@ export function shallowCopy(value) {
     return assign(target, value)
 }
 
+// 调用callback  
 export function each(value, cb) {
+    // 遍历数组 返回索引与值
     if (Array.isArray(value)) {
         for (let i = 0; i < value.length; i++) cb(i, value[i])
+    // 遍历对象 返回key与值
     } else {
         for (let key in value) cb(key, value[key])
     }
