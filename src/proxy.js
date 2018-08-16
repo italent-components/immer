@@ -15,6 +15,7 @@ import {
 
 let proxies = null
 
+// 对象
 const objectTraps = {
     get,
     has(target, prop) {
@@ -31,7 +32,7 @@ const objectTraps = {
         throw new Error("Immer does not support `setPrototypeOf()`.")
     }
 }
-
+// 数组陷阱？
 const arrayTraps = {}
 each(objectTraps, (key, fn) => {
     arrayTraps[key] = function() {
@@ -40,6 +41,7 @@ each(objectTraps, (key, fn) => {
     }
 })
 
+//创建状态
 function createState(parent, base) {
     return {
         modified: false, // this tree is modified (either this object or one of it's children)
@@ -51,11 +53,12 @@ function createState(parent, base) {
         proxies: {}
     }
 }
-
+// 数据源
 function source(state) {
     return state.modified === true ? state.copy : state.base
 }
 
+// 获取属性
 function get(state, prop) {
     if (prop === PROXY_STATE) return state
     if (state.modified) {
@@ -73,7 +76,7 @@ function get(state, prop) {
         return value
     }
 }
-
+// 设置属性
 function set(state, prop, value) {
     // TODO: optimize
     state.assigned[prop] = true
@@ -89,6 +92,7 @@ function set(state, prop, value) {
     return true
 }
 
+// 删除属性
 function deleteProperty(state, prop) {
     state.assigned[prop] = false
     markChanged(state)
@@ -96,6 +100,7 @@ function deleteProperty(state, prop) {
     return true
 }
 
+//获取自己的属性描述符
 function getOwnPropertyDescriptor(state, prop) {
     const owner = state.modified
         ? state.copy
@@ -105,13 +110,14 @@ function getOwnPropertyDescriptor(state, prop) {
         descriptor.configurable = true
     return descriptor
 }
-
+// 不支持draft对象调用defineProperty
 function defineProperty() {
     throw new Error(
         "Immer does not support defining properties on draft objects."
     )
 }
 
+// 标记更改
 function markChanged(state) {
     if (!state.modified) {
         state.modified = true
@@ -123,6 +129,7 @@ function markChanged(state) {
 }
 
 // creates a proxy for plain objects / arrays
+// 为原生对象原生数组创建代理属性
 function createProxy(parentState, base, key) {
     if (isProxy(base)) throw new Error("Immer bug. Plz report.")
     const state = createState(parentState, base, key)
@@ -133,6 +140,7 @@ function createProxy(parentState, base, key) {
     return proxy.proxy
 }
 
+// 生成代理
 export function produceProxy(baseState, producer, patchListener) {
     if (isProxy(baseState)) {
         // See #100, don't nest producers
